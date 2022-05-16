@@ -96,8 +96,8 @@ async def crawler_page(raw_row):
                     'unit_remark': unit['unit_remark'],
                 }
                 writer.writerow(out_dict)
-    except:
-        print("something error")
+    except Exception as e:
+        print(e)
 
 with open('final_output_moc.csv', 'w', newline='', encoding='utf-8-sig', buffering=1) as fo:
     fieldnames = ['publish_year', 'publish_date', 'publish_link', 'grant_title', 'grant_project', 'grant_department', 'grant_judge', 'unit_group', 'unit_name', 'unit_project', 'unit_fund', 'unit_remark']
