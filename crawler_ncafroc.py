@@ -1,6 +1,12 @@
-import requests, csv, asyncio, datetime
+import requests, csv, asyncio, logging
 from bs4 import BeautifulSoup
 
+Log_Format = "%(levelname)s %(asctime)s - %(message)s"
+logging.basicConfig(filename = "logfile.log",
+                    filemode = "w",
+                    format = Log_Format, 
+                    level = logging.ERROR)
+logger = logging.getLogger()
 loop = asyncio.get_event_loop()
 all_data = []
 async def crawler(url):
@@ -62,9 +68,10 @@ async def crawler_page(raw_row):
         writer.writerow(current_data)
     except Exception as e:
         print(url, 'error! ', e)
+        logger.error('{} {}'.format(url, e))
 
 
-with open('final_output_ncafroc.csv', 'w', newline='', encoding='utf-8-sig', buffering=1) as fo:
+with open('output/final_output_ncafroc.csv', 'w', newline='', encoding='utf-8-sig', buffering=1) as fo:
     fieldnames = ['title', 'name', 'link', 'category', 'year', 'group', 'season', 'funding']
     writer = csv.DictWriter(fo, fieldnames=fieldnames)
     writer.writeheader()
