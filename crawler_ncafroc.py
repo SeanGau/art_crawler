@@ -50,8 +50,10 @@ async def crawler_page(raw_row):
             grant.append('')
         if soup.select_one('.row-grantee .s-item .ctx p'):
             name = soup.select_one('.row-grantee .s-item .ctx p').string
-        else:
+        elif soup.select_one('.page-head h2').string:
             name = soup.select_one('.page-head h2').string
+        else:
+            name = soup.select_one('.page-head h2 a').string
             
         current_data = {
             'title': raw_row['title'],
