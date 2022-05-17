@@ -1,0 +1,13 @@
+# 藝文補助資料爬蟲
+
+## how to use
+you have to install pipenv first
+```bash
+pipenv sync
+pipenv shell
+```
+```
+python crawler_moc.py
+python crawler_ncafroc.py
+```
+output data will be in output/
