@@ -1,5 +1,7 @@
 # 藝文補助資料爬蟲
 
+https://g0v.hackmd.io/@SeanGau/SyIidsF_c
+
 ## how to use
 you have to install pipenv first
 ```bash
