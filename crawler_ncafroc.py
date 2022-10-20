@@ -38,15 +38,14 @@ async def crawler(type, year):
         soup = BeautifulSoup(web.text, "html.parser")
         rows = soup.find_all('tbody')
         for row in rows:
-            data_title = {'year': '年度', 'season': '期別', 'type': '補助性質', 'category': '類別', 'group': '項目', 'name': '申請者', 'title': '計畫名稱', 'funding': '獲補金額', 'note': '備註'}
+            data_title = {'year': '年度', 'season': '期別', 'type': '補助性質', 'category': '類別', 'group': '項目', 'name': '申請者', 'title': '計畫名稱', 'funding': '補助經費', 'note': '備註'}
             current_data = {}
             for key in data_title:
                 if row.find('i', string=data_title[key]):
                     current_data[key] = row.find('i', string=data_title[key]).parent.find('span').get_text().replace(' ','')
             for committee in committee_data:
                 if committee['year'] == current_data['year'] and committee['season'] == current_data['season'] and committee['type'] == current_data['type'] and committee['category'] == current_data['category']:
-                    current_data['chairman'] = committee['chairman'].replace(' ','')
-                    current_data['committee'] = committee['members'].replace(' ','')
+                    current_data['committee'] = committee['chairman'].replace(' ','')+"、"+committee['members'].replace(' ','')
             print(current_data)
             all_data.append(current_data)
             
@@ -56,7 +55,7 @@ async def crawler(type, year):
         logger.error('{} {}'.format(url, e))
 
 tasks = []
-for year in range(104, 105):
+for year in range(85, 120):
     task = asyncio.ensure_future(crawler('NORMAL', year))
     tasks.append(task)
     task = asyncio.ensure_future(crawler('PROJECT', year))
@@ -65,13 +64,21 @@ for year in range(104, 105):
     tasks.append(task)
 loop.run_until_complete(asyncio.wait(tasks)) #finish crawling list
 
+def makehash(rowdata):
+    hashcode = hashlib.sha256(json.dumps(rowdata).encode('utf-8')).hexdigest()
+    return hashcode
+
 with open('output/final_output_ncafroc.csv', 'w', newline='', encoding='utf-8-sig', buffering=1) as fo:
-    fieldnames = ['year', 'season', 'type', 'category', 'group', 'name', 'title', 'funding', 'note', 'chairman', 'committee']
+    fieldnames = ['year', 'season', 'type', 'category', 'group', 'name', 'title', 'funding', 'note', 'committee']
     writer = csv.DictWriter(fo, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(all_data)
     c = conn.cursor()
     for row in all_data:
-        c.execute("insert into ncafroc values (?, ?)", [hashlib.sha256(json.dumps(row).encode('utf-8')).hexdigest(), json.dumps(row, ensure_ascii=False)])
+        hashcode = makehash(row)
+        c.execute("select * from ncafroc where hash=?", [hashcode])
+        if not c.fetchall():
+            print("insert data", row)
+            c.execute("insert into ncafroc values (?, ?, strftime('%s','now'))", [hashcode, json.dumps(row, ensure_ascii=False)])
     conn.commit()
     conn.close()

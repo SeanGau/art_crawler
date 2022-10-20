@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FlaskTest</title>
+</head>
+
+<body>
+  <select id="type" name="type">
+    <option value="常態" selected="selected">常態</option>
+    <option value="專案">專案</option>
+    <option value="國際文化交流">國際文化交流</option>
+  </select>
+  <input type="number" name="year" id="year" min="84" max="120" value="110">
+  <table>
+    <thead>
+      <tr></tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+    integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script>
+    let updateData = (year, type) => {
+      $("tbody").html("");
+      $.getJSON(`/api/getdata?year=${year}&type=${type}`, function (data) {
+        console.log(data);
+        data.forEach(row => {
+          rowDom = $(`<tr></tr>`);
+          headers.forEach(header => {
+            rowDom.append($(`<td>${row[header]}</td>`));
+          });
+          $("tbody").append(rowDom);
+        });
+      });
+    }
+
+    headers = ['year', 'season', 'type', 'category', 'group', 'name', 'title', 'funding', 'note', 'committee']
+    headers.forEach(header => {
+      $("thead tr").append(`<th>${header}</th>`)
+    });
+    updateData($("#year").val(), $("#type").val());
+    
+    $("#type, #year").on("change", function () {
+      updateData($("#year").val(), $("#type").val());
+    })
+  </script>
+</body>
+
+</html>

@@ -6,12 +6,14 @@ c = conn.cursor()
 c.execute('''
   CREATE TABLE ncafroc
   (hash  TEXT  NOT NULL,
-   data  json  NOT NULL);
+   data  json  NOT NULL,
+   timestamp TEXT NOT NULL);
   ''')
 c.execute('''
   CREATE TABLE moc
   (hash  TEXT  NOT NULL,
-   data  json  NOT NULL);
+   data  json  NOT NULL,
+   timestamp TEXT NOT NULL);
   ''')
 print ("資料庫創建成功")
 conn.commit()
