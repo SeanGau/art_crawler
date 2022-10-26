@@ -2,7 +2,12 @@
 <html>
 
 <head>
-  <title>FlaskTest</title>
+  <title>Art Crawler</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -12,7 +17,13 @@
     <option value="國際文化交流">國際文化交流</option>
   </select>
   <input type="number" name="year" id="year" min="84" max="120" value="110">
-  <table>
+  {% for i in range(84, 112) %}
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" value="{{i}}" id="year{{i}}">
+    <label class="form-check-label" for="year{{i}}">{{i}}</label>
+  </div>
+  {% endfor %}
+  <table class="table table-striped-columns table-bordered">
     <thead>
       <tr></tr>
     </thead>
@@ -41,7 +52,7 @@
       $("thead tr").append(`<th>${header}</th>`)
     });
     updateData($("#year").val(), $("#type").val());
-    
+
     $("#type, #year").on("change", function () {
       updateData($("#year").val(), $("#type").val());
     })
